@@ -207,12 +207,12 @@ const userForgotPassword = async (req, res) => {
       },
     });
 
-    await transporter.sendMail({
-      from: "sai1999naguboina@gmail.com",
-      to: email,
-      subject: "Password Reset",
-      text: `Click the following link to reset your password: http://192.168.29.225:3000/ResetPassword/${resetToken}`,
-    });
+    // await transporter.sendMail({
+    //   from: "sai1999naguboina@gmail.com",
+    //   to: email,
+    //   subject: "Password Reset",
+    //   // text: `Click the following link to reset your password: http://localhost:3050/reset-password/${resetToken}`,
+    // });
 
     res.status(200).json({ message: "Password reset email sent successfully" });
   } catch (error) {

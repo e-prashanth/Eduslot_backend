@@ -161,51 +161,51 @@ console.log(userId);
   }
 };
 
-// Endpoint to request a password reset email
-const adminForgotPassword = async (req, res) => {`
-  const { email } = req.body;
+// // Endpoint to request a password reset email
+// const adminForgotPassword = async (req, res) => {`
+//   const { email } = req.body;
 
-  try {
-    // Find user by email
-    const user = await User.findOne({ email });
+//   try {
+//     // Find user by email
+//     const user = await User.findOne({ email });
 
-    // Check if user exists
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+//     // Check if user exists
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
 
-    // Generate a reset token and expiration
-    const resetToken = randomstring.generate(20);
-    const resetTokenExpiration = new Date(Date.now() + 3600000); // 1 hour
+//     // Generate a reset token and expiration
+//     const resetToken = randomstring.generate(20);
+//     const resetTokenExpiration = new Date(Date.now() + 3600000); // 1 hour
 
-    // Update user with reset token and expiration
-    user.resetToken = resetToken;
-    user.resetTokenExpiration = resetTokenExpiration;
-    await user.save();
+//     // Update user with reset token and expiration
+//     user.resetToken = resetToken;
+//     user.resetTokenExpiration = resetTokenExpiration;
+//     await user.save();
 
-    // Send reset email (you may customize the email content)
-    const transporter = nodemailer.createTransport({
-      // Your email configuration
-      service: 'gmail',
-      auth: {
-        user: 'edeprashanth@gmail.com',
-        pass: 'oidd igrx wmdl yxtn',
-      },
-    });
+//     // Send reset email (you may customize the email content)
+//     const transporter = nodemailer.createTransport({
+//       // Your email configuration
+//       service: 'gmail',
+//       auth: {
+//         user: 'edeprashanth@gmail.com',
+//         pass: 'oidd igrx wmdl yxtn',
+//       },
+//     });
 
-    await transporter.sendMail({
-      from: 'edeprashanth@gmail.com',
-      to: email,
-      subject: 'Password Reset',
-      text: `Click the following link to reset your password: http://localhost:3050/reset-password/${resetToken}`,
-    });
+//     await transporter.sendMail({
+//       from: 'edeprashanth@gmail.com',
+//       to: email,
+//       subject: 'Password Reset',
+//       text: `Click the following link to reset your password: http://localhost:3050/reset-password/${resetToken}`,
+//     });
 
-    res.status(200).json({ message: 'Password reset email sent successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
+//     res.status(200).json({ message: 'Password reset email sent successfully' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Internal Server Error' });
+//   }
+// };
 
  // Endpoint to get user details by ID
 const getAdminDetails = async (req, res) => {
@@ -356,7 +356,7 @@ module.exports = {
   createUser,
   adminLogin,
   adminchangePassword,
-  adminForgotPassword,
+  // adminForgotPassword,
   getAdminDetails,
   updateAdminDetails,
   deleteAdminDetails,

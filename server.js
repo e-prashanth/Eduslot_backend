@@ -32,9 +32,24 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Import and use routes for the second application
 const EduslotUserRouter = require('./controllers/user_routers');
 const EduslotAdminRouter = require('./controllers/admin_routers');
+const Department=require('./controllers/department_routes');
+const Class=require('./controllers/classes_routes');
+const Lab=require('./controllers/labs_routes');
+const Year=require('./controllers/years_routes');
+const Day=require('./controllers/day_routes');
+const ClassesForTheDay=require('./controllers/classesfortheday_routes');
+const Booking=require('./controllers/booking_routes');
+
 
 app.use('/Eduslot/user', EduslotUserRouter);
 app.use('/Eduslot/admin',EduslotAdminRouter);
+app.use('/Eduslot/department', Department);
+app.use('/Eduslot/classes',Class);
+app.use('/Eduslot/labs',Lab);
+app.use('/Eduslot/years',Year);
+app.use('/Eduslot/day',Day);
+app.use('/Eduslot/classesfortheday',ClassesForTheDay);
+app.use('/Eduslot/booking',Booking);
 
 // Start the server
 app.listen(PORT, () => {
