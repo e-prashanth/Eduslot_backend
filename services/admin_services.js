@@ -23,18 +23,13 @@ const createUser = async (req, res) => {
     mobileNo,
     email,
     roleId,
-    password
+    password,
   } = req.body;
  
 
   
   const username = email;
   try {
-    // Check if roleId is provided and valid (you might want more thorough validation)
-    /* if (!roleId || typeof roleId !== 'number') {
-      return res.status(400).json({ message: 'Invalid roleId provided.' });
-    } */
-
     const user = new User({
       name,
       mobileNo,
@@ -42,18 +37,11 @@ const createUser = async (req, res) => {
       username,
       password,
       roleId,
-     // userProfileImage: req.file?.filename ?? '', // If req.file or req.file.filename is undefined, set to an empty string
+     userProfileImage: req.file?.filename ?? '',
     });
     
     await user.save();
    console.log(user);
-    await transporter.sendMail({
-      from: 'edeprashanth@gmail.com',
-      to: email,
-      subject: 'Your account details',
-      text: `Username: ${username}\nPassword: ${password}`,
-    });
-
     res.status(201).json({ message: 'User created successfully.' });
   } catch (error) {
     console.error(error);
