@@ -1,13 +1,14 @@
 const Department = require('../models/department_model');
 
 async function addDepartment(req, res) {
-  const { departmentName } = req.body;
+  const { departmentName , labsCount, classesCount } = req.body;
   try {
-    const department = new Department({ departmentName });
+    const department = new Department({ departmentName , labsCount ,classesCount});
     await department.save();
     res.status(201).json({ department });
   } catch (error) {
     res.status(500).json({ message: error.message });
+    console.log(error)
   }
 }
 

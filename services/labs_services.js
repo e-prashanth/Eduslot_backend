@@ -1,13 +1,14 @@
 const Lab = require('../models/labs_model');
 
 async function addLab(req, res) {
-  const { departmentId, labName, labId } = req.body;
+  const { departmentId, labName , departmentName} = req.body;
   try {
-    const newLab = new Lab({ departmentId, labName, labId });
+    const newLab = new Lab({ departmentId, labName , departmentName});
     await newLab.save();
     res.status(201).json({ newLab });
   } catch (error) {
     res.status(500).json({ message: error.message });
+    console.log(error);
   }
 }
 

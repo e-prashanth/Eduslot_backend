@@ -1,9 +1,9 @@
 const Class = require('../models/classes_model');
 
 async function addClass(req, res) {
-  const { departmentId, classNumber, classId } = req.body;
+  const { departmentId, classNumber , departmentName } = req.body;
   try {
-    const newClass = new Class({ departmentId, classNumber, classId });
+    const newClass = new Class({ departmentId, classNumber , departmentName });
     await newClass.save();
     res.status(201).json({ newClass });
   } catch (error) {

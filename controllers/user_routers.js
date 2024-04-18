@@ -17,7 +17,7 @@ router.post('/user-change-password', userService.userChangePassword);
 router.post('/user-forgot-password', userService.userForgotPassword);
 
 //Route to get user details
-router.get('/get-user-details', verifyToken, userService.getUserDetails);
+router.get('/get-user-details' , userService.getUserDetails);
 
 //Route to update user details
 router.put('/update-user-details', verifyToken, upload.single('file'), userService.updateUserDetails);

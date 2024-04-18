@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const userLogin = async (req, res) => {
+const userLogin = async (req, res) => { 
   const { username, password } = req.body;
 
   try {
@@ -222,7 +222,7 @@ const userForgotPassword = async (req, res) => {
 };
 
 // Endpoint to get user details by ID
-const getUserDetails = async (req, res) => {
+const getUserDetails = async (req, res) => {  ``
   const userId = req.query.userId;
   console.log(userId);
 

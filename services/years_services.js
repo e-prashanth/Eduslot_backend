@@ -1,9 +1,9 @@
 const Year = require('../models/years_model');
 
 async function addYear(req, res) {
-  const { departmentId, yearId, yearName } = req.body;
+  const { departmentId, yearName , departmentName} = req.body;
   try {
-    const newYear = new Year({ departmentId, yearId, yearName });
+    const newYear = new Year({ departmentId, departmentName, yearName });
     await newYear.save();
     res.status(201).json({ newYear });
   } catch (error) {

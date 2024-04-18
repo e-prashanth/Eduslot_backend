@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 
 // Department Schema
 const departmentSchema = new mongoose.Schema({
-  departmentId: { type: Number, unique: true },
   departmentName: String,
+  labsCount:Number,
+  classesCount:Number
 });
 
 const Department = mongoose.model('Department', departmentSchema);
