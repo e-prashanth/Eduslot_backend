@@ -39,7 +39,7 @@ const Year=require('./controllers/years_routes');
 const Day=require('./controllers/day_routes');
 const ClassesForTheDay=require('./controllers/classesfortheday_routes');
 const Booking=require('./controllers/booking_routes');
-
+const times = require('./controllers/time_routers')
 
 app.use('/Eduslot/user', EduslotUserRouter);
 app.use('/Eduslot/admin',EduslotAdminRouter);
@@ -50,6 +50,7 @@ app.use('/Eduslot/years',Year);
 app.use('/Eduslot/day',Day);
 app.use('/Eduslot/classesfortheday',ClassesForTheDay);
 app.use('/Eduslot/booking',Booking);
+app.use('/Eduslot/times',times);
 
 // Start the server
 app.listen(PORT, () => {

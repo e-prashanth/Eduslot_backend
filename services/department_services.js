@@ -24,7 +24,7 @@ async function getAllDepartments(req, res) {
 async function deleteDepartment(req, res) {
   const { departmentName } = req.params;
   try {
-    const result = await Department.deleteOne({ departmentName });
+    const result = await Department.findByIdAndDelete(departmentName);
     if (result.deletedCount === 0) {
       throw new Error('Department not found');
     }
