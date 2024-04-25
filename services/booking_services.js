@@ -1,9 +1,9 @@
 const Booking = require('../models/booking_model');
 
 async function addBooking(req, res) {
-  const { userId, deptId, yearId, dayId, labId, classId, time, date } = req.body;
+  const { userId, departmentId, yearId, dayId, labId, classId, timeId, date } = req.body;
   try {
-    const newBooking = new Booking({ userId, deptId, yearId, dayId, labId, classId, time, date });
+    const newBooking = new Booking({ userId, departmentId, yearId, dayId, labId, classId, timeId, date });
     await newBooking.save();
     res.status(201).json({ newBooking });
   } catch (error) {
