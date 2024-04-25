@@ -1,9 +1,9 @@
 const ClassesForDay = require('../models/classesfortheday_model');
 
 async function addClassesForDay(req, res) {
-  const { dayId, time, className, labId, classId, classForDayId } = req.body;
+  const { dayId, timeId, className, departmentId,yearId,labId, classId } = req.body;
   try {
-    const newClassesForDay = new ClassesForDay({ dayId, time, className, labId, classId, classForDayId });
+    const newClassesForDay = new ClassesForDay({dayId, timeId, className, departmentId,yearId,labId, classId});
     await newClassesForDay.save();
     res.status(201).json({ newClassesForDay });
   } catch (error) {
@@ -23,7 +23,7 @@ async function getAllClassesForDay(req, res) {
 async function deleteClassesForDay(req, res) {
   const { classForDayId } = req.params;
   try {
-    const result = await ClassesForDay.deleteOne({ classForDayId });
+    const result = await ClassesForDay.deleteOne({_id: classForDayId });
     if (result.deletedCount === 0) {
       throw new Error('Class for day not found');
     }
@@ -34,12 +34,12 @@ async function deleteClassesForDay(req, res) {
 }
 
 async function updateClassesForDay(req, res) {
-  const { oldClassForDayId } = req.params;
-  const { newDayId, newTime, newClassName, newLabId, newClassId, newClassForDayId } = req.body;
+  const { ClassForDayId } = req.params;
+  const { newDayId, newTimeId, newClassName,newdepartmentId, newLabId,newYearId, newClassId } = req.body;
   try {
-    const result = await ClassesForDay.updateOne(
-      { classForDayId: oldClassForDayId },
-      { dayId: newDayId, time: newTime, className: newClassName, labId: newLabId, classId: newClassId, classForDayId: newClassForDayId }
+    const result = await ClassesForDay.findByIdAndUpdate(
+      ClassForDayId ,
+      { dayId: newDayId, timeId: newTimeId, className: newClassName,departmentId:newdepartmentId,yearId:newYearId, labId: newLabId, classId: newClassId}
     );
     if (result.nModified === 0) {
       throw new Error('Class for day not found or no changes were made');
