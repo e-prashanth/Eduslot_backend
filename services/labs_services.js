@@ -1,14 +1,13 @@
 const Lab = require('../models/labs_model');
 
 async function addLab(req, res) {
-  const { departmentId, labName , departmentName} = req.body;
+  const { departmentId, labName} = req.body;
   try {
-    const newLab = new Lab({ departmentId, labName , departmentName});
+    const newLab = new Lab({ departmentId, labName });
     await newLab.save();
     res.status(201).json({ newLab });
   } catch (error) {
     res.status(500).json({ message: error.message });
-    console.log(error);
   }
 }
 
@@ -24,7 +23,7 @@ async function getAllLabs(req, res) {
 async function deleteLab(req, res) {
   const { labId } = req.params;
   try {
-    const result = await Lab.deleteOne({ labId });
+    const result = await Lab.deleteOne({_id: labId });
     if (result.deletedCount === 0) {
       throw new Error('Lab not found');
     }
@@ -35,10 +34,10 @@ async function deleteLab(req, res) {
 }
 
 async function updateLab(req, res) {
-  const { oldLabId } = req.params;
-  const { newDepartmentId, newLabName, newLabId } = req.body;
+  const { labId } = req.params;
+  const { newDepartmentId, newLabName } = req.body;
   try {
-    const result = await Lab.updateOne({ labId: oldLabId }, { departmentId: newDepartmentId, labName: newLabName, labId: newLabId });
+    const result = await Lab.findByIdAndUpdate(labId,{ departmentId: newDepartmentId, labName: newLabName});
     if (result.nModified === 0) {
       throw new Error('Lab not found or no changes were made');
     }

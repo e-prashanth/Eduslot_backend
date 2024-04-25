@@ -5,6 +5,6 @@ const labService = require('../services/labs_services');
 router.post('/add-lab', labService.addLab);
 router.get('/get-all-labs', labService.getAllLabs);
 router.delete('/delete-lab/:labId', labService.deleteLab);
-router.put('/update-lab/:oldLabId', labService.updateLab);
+router.put('/update-lab/:labId', labService.updateLab);
 
 module.exports = router;
