@@ -1,9 +1,9 @@
 const Year = require('../models/years_model');
 
 async function addYear(req, res) {
-  const { departmentId, yearName , departmentName} = req.body;
+  const { departmentId, yearName } = req.body;
   try {
-    const newYear = new Year({ departmentId, departmentName, yearName });
+    const newYear = new Year({ departmentId, yearName });
     await newYear.save();
     res.status(201).json({ newYear });
   } catch (error) {
@@ -23,7 +23,7 @@ async function getAllYears(req, res) {
 async function deleteYear(req, res) {
   const { yearId } = req.params;
   try {
-    const result = await Year.deleteOne({ yearId });
+    const result = await Year.deleteOne({_id: yearId });
     if (result.deletedCount === 0) {
       throw new Error('Year not found');
     }
@@ -34,10 +34,10 @@ async function deleteYear(req, res) {
 }
 
 async function updateYear(req, res) {
-  const { oldYearId } = req.params;
-  const { newDepartmentId, newYearId, newYearName } = req.body;
+  const { yearId } = req.params;
+  const { newDepartmentId, newYearName } = req.body;
   try {
-    const result = await Year.updateOne({ yearId: oldYearId }, { departmentId: newDepartmentId, yearId: newYearId, yearName: newYearName });
+    const result = await Year.findByIdAndUpdate(yearId, { departmentId: newDepartmentId, yearName: newYearName });
     if (result.nModified === 0) {
       throw new Error('Year not found or no changes were made');
     }

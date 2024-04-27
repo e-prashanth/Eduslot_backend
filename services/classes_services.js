@@ -1,9 +1,9 @@
 const Class = require('../models/classes_model');
 
 async function addClass(req, res) {
-  const { departmentId, classNumber , departmentName } = req.body;
+  const { departmentId, classNumber } = req.body;
   try {
-    const newClass = new Class({ departmentId, classNumber , departmentName });
+    const newClass = new Class({ departmentId, classNumber});
     await newClass.save();
     res.status(201).json({ newClass });
   } catch (error) {
@@ -23,7 +23,7 @@ async function getAllClasses(req, res) {
 async function deleteClass(req, res) {
   const { classId } = req.params;
   try {
-    const result = await Class.deleteOne({ classId });
+    const result = await Class.deleteOne({ _id:classId });
     if (result.deletedCount === 0) {
       throw new Error('Class not found');
     }
@@ -34,10 +34,10 @@ async function deleteClass(req, res) {
 }
 
 async function updateClass(req, res) {
-  const { oldClassId } = req.params;
-  const { newDepartmentId, newClassNumber, newClassId } = req.body;
+  const {classId } = req.params;
+  const { newDepartmentId, newClassNumber} = req.body;
   try {
-    const result = await Class.updateOne({ classId: oldClassId }, { departmentId: newDepartmentId, classNumber: newClassNumber, classId: newClassId });
+    const result = await Class.findByIdAndUpdate(classId , { departmentId: newDepartmentId, classNumber: newClassNumber});
     if (result.nModified === 0) {
       throw new Error('Class not found or no changes were made');
     }

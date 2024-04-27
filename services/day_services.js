@@ -1,9 +1,9 @@
 const Day = require('../models/day_model');
 
 async function addDay(req, res) {
-  const { departmentId, yearId, dayName, dayId } = req.body;
+  const { departmentId, yearId, dayName } = req.body;
   try {
-    const newDay = new Day({ departmentId, yearId, dayName, dayId });
+    const newDay = new Day({ departmentId, yearId, dayName});
     await newDay.save();
     res.status(201).json({ newDay });
   } catch (error) {
@@ -23,7 +23,7 @@ async function getAllDays(req, res) {
 async function deleteDay(req, res) {
   const { dayId } = req.params;
   try {
-    const result = await Day.deleteOne({ dayId });
+    const result = await Day.deleteOne({_id: dayId });
     if (result.deletedCount === 0) {
       throw new Error('Day not found');
     }
@@ -34,10 +34,10 @@ async function deleteDay(req, res) {
 }
 
 async function updateDay(req, res) {
-  const { oldDayId } = req.params;
-  const { newDepartmentId, newYearId, newDayName, newDayId } = req.body;
+  const { dayId } = req.params;
+  const { newDepartmentId, newYearId, newDayName} = req.body;
   try {
-    const result = await Day.updateOne({ dayId: oldDayId }, { departmentId: newDepartmentId, yearId: newYearId, dayName: newDayName, dayId: newDayId });
+    const result = await Day.findByIdAndUpdate(dayId, { departmentId: newDepartmentId, yearId: newYearId, dayName: newDayName });
     if (result.nModified === 0) {
       throw new Error('Day not found or no changes were made');
     }

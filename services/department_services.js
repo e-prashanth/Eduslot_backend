@@ -22,30 +22,34 @@ async function getAllDepartments(req, res) {
 }
 
 async function deleteDepartment(req, res) {
-  const { departmentName } = req.params;
+  const { departmentId } = req.params;
   try {
-    const result = await Department.findByIdAndDelete(departmentName);
+    const result = await Department.deleteOne({ _id: departmentId });
     if (result.deletedCount === 0) {
-      throw new Error('Department not found');
+      throw new Error("Department not found");
     }
-    res.status(200).json({ message: 'Department deleted successfully' });
+    res.status(200).json({ message: "Department deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
 
 async function updateDepartment(req, res) {
-  const { oldDepartmentName } = req.params;
+  const { departmentId } = req.params;
   const { newDepartmentName } = req.body;
   try {
-    const result = await Department.updateOne({ departmentName: oldDepartmentName }, { departmentName: newDepartmentName });
-    if (result.nModified === 0) {
-      throw new Error('Department not found or no changes were made');
+    const result = await Department.findByIdAndUpdate(departmentId, {
+      departmentName: newDepartmentName,
+    });
+    if (!result) {
+      console.log("Department not found:", departmentId); // Add this console log
+      return res.status(404).json({ error: "Department not found" });
     }
-    res.status(200).json({ message: 'Department updated successfully' });
+    res.status(200).json({ message: "Department updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
+
 
 module.exports = { addDepartment, getAllDepartments, deleteDepartment, updateDepartment };

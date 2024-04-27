@@ -1,11 +1,8 @@
-// department_model.js
 const mongoose = require('mongoose');
 
 // Department Schema
 const departmentSchema = new mongoose.Schema({
-  departmentName: String,
-  labsCount:Number,
-  classesCount:Number
+  departmentName: { type: String, required: true,index:true, unique: true ,sparse:true} // Making departmentName unique
 });
 
 const Department = mongoose.model('Department', departmentSchema);
