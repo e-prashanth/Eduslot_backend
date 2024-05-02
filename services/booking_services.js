@@ -15,6 +15,7 @@ async function getAllBookings(req, res) {
   try {
     const bookings = await Booking.find({}, 'userId deptId yearId dayId labId classId time date');
     res.status(200).json({ bookings });
+    console.log("hi")
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
