@@ -39,7 +39,10 @@ const Year=require('./controllers/years_routes');
 const Day=require('./controllers/day_routes');
 const ClassesForTheDay=require('./controllers/classesfortheday_routes');
 const Booking=require('./controllers/booking_routes');
-const times = require('./controllers/time_routers')
+const times = require('./controllers/time_routers');
+const section = require('./controllers/section_routers');
+const student = require('./controllers/student_routers');
+const student_attendence = require('./controllers/student_attendence_routers');
 
 app.use('/Eduslot/user', EduslotUserRouter);
 app.use('/Eduslot/admin',EduslotAdminRouter);
@@ -51,7 +54,9 @@ app.use('/Eduslot/day',Day);
 app.use('/Eduslot/classesfortheday',ClassesForTheDay);
 app.use('/Eduslot/booking',Booking);
 app.use('/Eduslot/times',times);
-
+app.use('/Eduslot/section',section);
+app.use('/Eduslot/student',student);
+app.use('/Eduslot/student-attendence',student_attendence)
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

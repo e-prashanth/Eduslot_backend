@@ -20,6 +20,16 @@ async function getAllYears(req, res) {
   }
 }
 
+async function getYearsByDeptId(req,res){
+  try {
+    const departmentId = req.query.departmentId;
+    const years = await Year.find({departmentId}, 'departmentId yearId yearName');
+    res.status(200).json({ years });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 async function deleteYear(req, res) {
   const { yearId } = req.params;
   try {
@@ -47,4 +57,4 @@ async function updateYear(req, res) {
   }
 }
 
-module.exports = { addYear, getAllYears, deleteYear, updateYear };
+module.exports = { addYear, getAllYears, deleteYear, updateYear , getYearsByDeptId};

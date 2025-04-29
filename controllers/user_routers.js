@@ -19,6 +19,9 @@ router.post('/user-forgot-password', userService.userForgotPassword);
 //Route to get user details
 router.get('/get-user-details' , userService.getUserDetails);
 
+//Route to get all teachers
+router.get('/get-all-teachers', userService.getAllTeachers);
+
 //Route to update user details
 router.put('/update-user-details', verifyToken, upload.single('file'), userService.updateUserDetails);
 

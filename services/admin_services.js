@@ -1,86 +1,84 @@
-const { User, Role } = require('../models/user_model');
-const nodemailer = require('nodemailer');
-const randomstring = require('randomstring');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const { User, Role } = require("../models/user_model");
+const nodemailer = require("nodemailer");
+const randomstring = require("randomstring");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-    user: 'edeprashanth@gmail.com', // Replace with your Gmail email
-    pass: 'oidd igrx wmdl yxtn', // Replace with your Gmail password
+    user: "edeprashanth@gmail.com", // Replace with your Gmail email
+    pass: "oidd igrx wmdl yxtn", // Replace with your Gmail password
   },
 });
 
 //To generate new password automatically by mathematical logic
 
-
-
 // TO CREATE ADMIN / NORMAL USER
 const createUser = async (req, res) => {
-  const {
-    name,
-    mobileNo,
-    email,
-    roleId,
-    password,
-  } = req.body;
- 
+  const { name, mobileNo, Subjects, email, roleId, departmentId, password } = req.body;
 
-  
   const username = email;
+
+  // Ensure 'Subjects' is an array, even if it's provided as a comma-separated string
+  const subjectArray = typeof Subjects === 'string' ? Subjects.split(',').map(subject => subject.trim()) : Subjects;
+
   try {
     const user = new User({
+      departmentId,
+      Subjects: subjectArray,  // Store as an array
       name,
       mobileNo,
       email,
       username,
       password,
       roleId,
-     userProfileImage: req.file?.filename ?? '',
+      userProfileImage: req.file?.filename ?? "",
     });
-    
+
     await user.save();
-   console.log(user);
-    res.status(201).json({ message: 'User created successfully.' });
+    console.log(user);
+    res.status(201).json({ message: "User created successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 
- const adminLogin = async (req, res) => {
+const adminLogin = async (req, res) => {
   const LoginData = req.body;
- console.log(LoginData.username);
- const username=LoginData.username;
- const password=LoginData.password;
- console.log(password);
+  console.log(LoginData.username);
+  const username = LoginData.username;
+  const password = LoginData.password;
+  console.log(password);
   try {
     // Find user by username
     const user = await User.findOne({ username });
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Check if the user is active
     if (!user.is_active) {
-      return res.status(401).json({ message: 'User is not active. Login is not allowed.' });
+      return res
+        .status(401)
+        .json({ message: "User is not active. Login is not allowed." });
     }
 
     // Check if password is correct
-    const isPasswordValid = true;//await bcrypt.compare(password, user.password);
+    const isPasswordValid = true; //await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid username or password' });
+      return res.status(401).json({ message: "Invalid username or password" });
     }
 
     // Check if it's the user's first login and force password change
     if (user.forcePasswordChange) {
       // You may return some information to the front end to prompt for a password change
       return res.status(200).json({
-        message: 'First login. Change password.',
+        message: "First login. Change password.",
         userId: user._id,
         forcePasswordChange: user.forcePasswordChange,
       });
@@ -92,8 +90,8 @@ const createUser = async (req, res) => {
     // Generate a token (you may use a library like jsonwebtoken)
     const token = jwt.sign(
       { userId: user._id, username: user.username, roleId: user.roleId },
-      'your-secret-key',
-      { expiresIn: '1h' }
+      "your-secret-key",
+      { expiresIn: "1h" }
     );
 
     // Return userId, token, role name, and forcePasswordChange
@@ -105,31 +103,31 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-
-
- // Make sure to install the 'bcryptjs' package
+// Make sure to install the 'bcryptjs' package
 
 //Endpoint to reset for first time/change password/forgot password
 const adminchangePassword = async (req, res) => {
   const { userId, newPassword, confirmPassword } = req.body;
   console.log(req.body);
-console.log(userId);
+  console.log(userId);
   try {
     // Find user by userId
-    const user = await User.findOne({_id:userId});
+    const user = await User.findOne({ _id: userId });
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Check if newPassword and confirmPassword are equal
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ message: 'New password and confirm password do not match' });
+      return res
+        .status(400)
+        .json({ message: "New password and confirm password do not match" });
     }
 
     // Hash the new password before saving it to the database
@@ -142,10 +140,10 @@ console.log(userId);
 
     await user.save();
 
-    res.status(200).json({ message: 'Password changed successfully' });
+    res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -195,9 +193,9 @@ console.log(userId);
 //   }
 // };
 
- // Endpoint to get user details by ID
+// Endpoint to get user details by ID
 const getAdminDetails = async (req, res) => {
- const userId = req.params.id;
+  const userId = req.params.id;
 
   try {
     // Find user by ID
@@ -205,14 +203,14 @@ const getAdminDetails = async (req, res) => {
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Return user details
     res.status(200).json({ user });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -226,7 +224,7 @@ const updateAdminDetails = async (req, res) => {
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Update user details
@@ -237,7 +235,7 @@ const updateAdminDetails = async (req, res) => {
     res.status(200).json({ user });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -250,14 +248,14 @@ const deleteAdminDetails = async (req, res) => {
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Return deleted user details
-    res.status(200).json({ message: 'User deleted successfully', user });
+    res.status(200).json({ message: "User deleted successfully", user });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -266,60 +264,65 @@ const adminLogout = async (req, res) => {
 
   // Check if the user is authenticated
   if (!userToken || !sessions[userToken]) {
-    res.status(401).json({ message: 'Unauthorized' });
+    res.status(401).json({ message: "Unauthorized" });
   } else {
     // Logout the user by removing their session
     delete sessions[userToken];
-    res.status(200).json({ message: 'Logged out successfully' });
+    res.status(200).json({ message: "Logged out successfully" });
   }
 };
 
- 
-  // Function to activate a user
+// Function to activate a user
 const activateUser = async (req, res) => {
   const userId = req.query.userId; // Assuming you pass the user's ID as a parameter
-  console.log('Activating user with ID:', userId); // Add this console log
+  console.log("Activating user with ID:", userId); // Add this console log
   try {
     // Find the user by ID and update the 'is_active' field to true
-    const user = await User.findByIdAndUpdate(userId, { is_active: true }, { new: true });
-    
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { is_active: true },
+      { new: true }
+    );
+
     if (!user) {
-      console.log('User not found:', userId); // Add this console log
-      return res.status(404).json({ error: 'User not found' });
+      console.log("User not found:", userId); // Add this console log
+      return res.status(404).json({ error: "User not found" });
     }
 
-    console.log('User activated:', user); // Add this console log
+    console.log("User activated:", user); // Add this console log
     res.json(user);
   } catch (error) {
     console.error(error);
-    console.log(error)
-    res.status(500).json({ error: 'Internal server error' });
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 // Function to deactivate a user
 const deactivateUser = async (req, res) => {
   const userId = req.query.userId; // Assuming you pass the user's ID as a parameter
-  console.log('Deactivating user with ID:', userId); // Add this console log
+  console.log("Deactivating user with ID:", userId); // Add this console log
   try {
     // Find the user by ID and update the 'is_active' field to false
-    const user = await User.findByIdAndUpdate(userId, { is_active: false }, { new: true });
-    
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { is_active: false },
+      { new: true }
+    );
+
     if (!user) {
-      console.log('User not found:', userId); // Add this console log
-      return res.status(404).json({ error: 'User not found' });
+      console.log("User not found:", userId); // Add this console log
+      return res.status(404).json({ error: "User not found" });
     }
 
-    console.log('User deactivated:', user); // Add this console log
+    console.log("User deactivated:", user); // Add this console log
     res.json(user);
   } catch (error) {
     console.error(error);
-    console.log(error)
-    res.status(500).json({ error: 'Internal server error' });
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
 
 // Get all normal user details and store in sessionStorage
 const getAllUsersDetails = async (req, res) => {
@@ -333,13 +336,12 @@ const getAllUsersDetails = async (req, res) => {
     res.status(200).json(userDetails);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while fetching normal user details.' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching normal user details." });
   }
 };
 
-
- 
-  
 module.exports = {
   createUser,
   adminLogin,
@@ -353,4 +355,3 @@ module.exports = {
   deactivateUser,
   getAllUsersDetails,
 };
-

@@ -7,5 +7,5 @@ router.get('/get-all-times', timeServices.getAllTimes);
 router.delete('/delete-time/:timeID', timeServices.deleteTime);
 router.put('/update-time/:oldtimeID',timeServices.UpdateTime);
 router.get('/get-time-by-year-day/:yearId/:dayId',timeServices.getTimeByYearIdAndTimeId);
-
+router.get('/get-time-by-all/:yearId/:dayId/:sectionId',timeServices.getTimeByYearIdAndDayIdAndSectionID);
 module.exports = router;

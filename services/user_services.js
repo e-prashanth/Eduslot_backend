@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const userLogin = async (req, res) => { 
+const userLogin = async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -222,7 +222,7 @@ const userForgotPassword = async (req, res) => {
 };
 
 // Endpoint to get user details by ID
-const getUserDetails = async (req, res) => {  ``
+const getUserDetails = async (req, res) => {
   const userId = req.query.userId;
   console.log(userId);
 
@@ -239,6 +239,20 @@ const getUserDetails = async (req, res) => {  ``
     res.status(200).json({ user });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const getAllTeachers = async (req, res) => {
+  try {
+    // Find all users where roleId is 2
+    const departmentId = req.query.departmentId;
+    const teachers = await User.find({ roleId: 2, departmentId: departmentId });
+
+    // Respond with the found teachers
+    res.status(200).json(teachers);
+  } catch (error) {
+    console.error("Error fetching teachers:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -311,56 +325,51 @@ const userLogout = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-    const {
+  const { name, mobileNo, email, roleId } = req.body;
+
+  console.log(name, mobileNo, email, roleId);
+
+  const username = email;
+  const password = /* randomstring.generate(8) */ generateRandomPassword();
+  console.log(password);
+  try {
+    // Check if roleId is provided and valid (you might want more thorough validation)
+    /* if (!roleId || typeof roleId !== 'number') {
+        return res.status(400).json({ message: 'Invalid roleId provided.' });
+      } */
+
+    const user = new User({
       name,
       mobileNo,
       email,
+      username,
+      password,
       roleId,
-    } = req.body;
-   
-    console.log( name,mobileNo, email, roleId,)
-  
-    
-    const username = email;
-    const password = /* randomstring.generate(8) */generateRandomPassword();
-     console.log(password);
-    try {
-      // Check if roleId is provided and valid (you might want more thorough validation)
-      /* if (!roleId || typeof roleId !== 'number') {
-        return res.status(400).json({ message: 'Invalid roleId provided.' });
-      } */
-  
-      const user = new User({
-        name,
-        mobileNo,
-        email,
-        username,
-        password,
-        roleId,
-       // userProfileImage: req.file?.filename ?? '', // If req.file or req.file.filename is undefined, set to an empty string
-      });
-      
-      await user.save();
-     console.log(user);
-      await transporter.sendMail({
-        from: 'sai1999naguboina@gmail.com',
-        to: email,
-        subject: 'Your account details',
-        text: `Username: ${username}\nPassword: ${password}`,
-      });
-  
-      res.status(201).json({ message: 'User created successfully.' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal Server Error' });
-    }
-  };
+      // userProfileImage: req.file?.filename ?? '', // If req.file or req.file.filename is undefined, set to an empty string
+    });
+
+    await user.save();
+    console.log(user);
+    await transporter.sendMail({
+      from: "sai1999naguboina@gmail.com",
+      to: email,
+      subject: "Your account details",
+      text: `Username: ${username}\nPassword: ${password}`,
+    });
+
+    res.status(201).json({ message: "User created successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   userLogin,
   userChangePassword,
   userForgotPassword,
   getUserDetails,
+  getAllTeachers,
   updateUserDetails,
   deleteUserDetails,
   userLogout,

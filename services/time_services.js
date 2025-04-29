@@ -1,9 +1,16 @@
 const time = require("../models/time_model");
+const Day = require("../models/day_model");
 
 async function addTime(req, res) {
-  const { departmentId, yearId, timeSlot,dayId } = req.body;
+  const { departmentId, yearId, timeSlot, dayId, sectionId } = req.body;
   try {
-    const newTime = new time({ departmentId, yearId, timeSlot , dayId});
+    const newTime = new time({
+      departmentId,
+      yearId,
+      timeSlot,
+      dayId,
+      sectionId,
+    });
     await newTime.save();
     res.status(201).json({ newTime });
   } catch (error) {
@@ -35,13 +42,15 @@ async function deleteTime(req, res) {
 
 async function UpdateTime(req, res) {
   const { oldtimeID } = req.params;
-  const { newDepartmentId, newYearId, newTimeSlot, newdayId } = req.body;
+  const { newDepartmentId, newYearId, newTimeSlot, newdayId, newSectionId } =
+    req.body;
   try {
     const result = await time.findByIdAndUpdate(oldtimeID, {
       departmentId: newDepartmentId,
       yearId: newYearId,
       timeSlot: newTimeSlot, // Assuming newTimeSlot needs to be updated
-      dayId : newdayId
+      dayId: newdayId,
+      sectionId: newSectionId,
     });
     if (!result) {
       throw new Error("Time not found");
@@ -58,19 +67,53 @@ async function UpdateTime(req, res) {
   }
 }
 
-async function getTimeByYearIdAndTimeId(req,res){
-    const {yearId,dayId} = req.params;
-    try{
-        const result = await time.find({yearId:yearId,dayId:dayId});
-        if(!result)
-        res.status(404).json({message:"the given yearid has no timeslots"});
-        else
-        res.status(200).json(result);
+async function getTimeByYearIdAndTimeId(req, res) {
+  const { yearId, dayId } = req.params;
+
+  try {
+    // Find timeslots using the obtained dayId and yearId in the Time model
+    const times = await time.find({ yearId: yearId, dayId: dayId });
+
+    if (times.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No timeslots found for the given year and day" });
     }
-    catch (error) {
-        let errorMessage = "Internal server error";
-        res.status(500).json({ message: errorMessage });
-      }
+
+    // Return the timeslots
+    res.status(200).json(times);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
-module.exports = { addTime, UpdateTime, deleteTime, getAllTimes,getTimeByYearIdAndTimeId };
+async function getTimeByYearIdAndDayIdAndSectionID(req, res) {
+  console.log("yesss");
+  const { yearId, dayId ,sectionId} = req.params;
+
+  try {
+    const times = await time.find({ yearId: yearId, dayId: dayId ,sectionId : sectionId});
+
+    if (times.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No timeslots found for the given year and day, section" });
+    }
+
+    // Return the timeslots
+    res.status(200).json(times);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+module.exports = {
+  addTime,
+  UpdateTime,
+  deleteTime,
+  getAllTimes,
+  getTimeByYearIdAndTimeId,
+  getTimeByYearIdAndDayIdAndSectionID
+};
